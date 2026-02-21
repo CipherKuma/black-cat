@@ -15,13 +15,13 @@ contract BlackCat is Ownable {
     struct Signal {
         uint256 id;
         address master;
-        uint8 direction; // 0=LONG, 1=SHORT
+        uint8 direction;
         string tokenPair;
         uint256 entryPrice;
         uint256 targetPrice;
         uint256 stopLoss;
         uint256 createdAt;
-        uint8 status; // 0=ACTIVE, 1=TARGET_HIT, 2=STOPPED_OUT, 3=EXPIRED
+        uint8 status;
         int256 pnlBps;
     }
 
@@ -35,7 +35,7 @@ contract BlackCat is Ownable {
 
     struct Subscription {
         address subscriber;
-        uint8 tier; // 0=FREE, 1=PRO
+        uint8 tier;
         uint256 expiresAt;
     }
 
@@ -54,16 +54,21 @@ contract BlackCat is Ownable {
     uint256 public constant SUB_DURATION = 30 days;
 
     event MasterRegistered(address indexed master, string name);
+    event SignalPosted(uint256 indexed id, address indexed master, uint8 direction, string tokenPair, uint256 entryPrice);
 
     constructor(address _paymentToken, address _keystoneForwarder) Ownable(msg.sender) {
         paymentToken = IERC20(_paymentToken);
         keystoneForwarder = _keystoneForwarder;
     }
 
+    modifier onlyMaster() {
+        require(masters[msg.sender].active, "Not a registered master");
+        _;
+    }
+
     function registerMaster(string calldata name) external {
         require(!masters[msg.sender].active, "Already registered");
         require(bytes(name).length > 0, "Name required");
-
         masters[msg.sender] = Master({
             addr: msg.sender,
             name: name,
@@ -72,5 +77,37 @@ contract BlackCat is Ownable {
         });
         masterAddresses.push(msg.sender);
         emit MasterRegistered(msg.sender, name);
+    }
+
+    function postSignal(
+        uint8 direction,
+        string calldata tokenPair,
+        uint256 entryPrice,
+        uint256 targetPrice,
+        uint256 stopLoss
+    ) external onlyMaster {
+        require(direction <= 1, "Invalid direction");
+        require(entryPrice > 0, "Invalid entry price");
+        require(targetPrice > 0, "Invalid target price");
+        require(stopLoss > 0, "Invalid stop loss");
+
+        uint256 id = signalCount;
+        signals[id] = Signal({
+            id: id,
+            master: msg.sender,
+            direction: direction,
+            tokenPair: tokenPair,
+            entryPrice: entryPrice,
+            targetPrice: targetPrice,
+            stopLoss: stopLoss,
+            createdAt: block.timestamp,
+            status: 0,
+            pnlBps: 0
+        });
+
+        masterSignalIds[msg.sender].push(id);
+        masterStats[msg.sender].totalSignals++;
+        signalCount++;
+        emit SignalPosted(id, msg.sender, direction, tokenPair, entryPrice);
     }
 }
