@@ -206,6 +206,7 @@ contract BlackCat is Ownable {
         emit LeaderboardUpdated(rankedMasters);
     }
 
+    // --- View Functions ---
     function getLeaderboard() external view returns (address[] memory, MasterStats[] memory) {
         MasterStats[] memory stats = new MasterStats[](leaderboard.length);
         for (uint256 i = 0; i < leaderboard.length; i++) {
@@ -219,6 +220,7 @@ contract BlackCat is Ownable {
         for (uint256 i = 0; i < signalCount; i++) {
             if (signals[i].status == 0) activeCount++;
         }
+
         Signal[] memory active = new Signal[](activeCount);
         uint256 idx = 0;
         for (uint256 i = 0; i < signalCount; i++) {
@@ -234,6 +236,10 @@ contract BlackCat is Ownable {
         return masterStats[master];
     }
 
+    function getSignal(uint256 id) external view returns (Signal memory) {
+        return signals[id];
+    }
+
     function getMasterSignals(address master) external view returns (Signal[] memory) {
         uint256[] memory ids = masterSignalIds[master];
         Signal[] memory result = new Signal[](ids.length);
@@ -243,11 +249,67 @@ contract BlackCat is Ownable {
         return result;
     }
 
+    function getMasterCount() external view returns (uint256) {
+        return masterAddresses.length;
+    }
+
+    function getMaster(address addr) external view returns (Master memory) {
+        return masters[addr];
+    }
+
     function getAllMasters() external view returns (address[] memory) {
         return masterAddresses;
     }
 
+    // --- Admin ---
     function setKeystoneForwarder(address _forwarder) external onlyOwner {
         keystoneForwarder = _forwarder;
+    }
+
+    /// @dev Owner can register a master on behalf of any address (for seeding)
+    function adminRegisterMaster(address addr, string calldata name) external onlyOwner {
+        require(!masters[addr].active, "Already registered");
+        require(bytes(name).length > 0, "Name required");
+
+        masters[addr] = Master({
+            addr: addr,
+            name: name,
+            registeredAt: block.timestamp,
+            active: true
+        });
+        masterAddresses.push(addr);
+        emit MasterRegistered(addr, name);
+    }
+
+    /// @dev Owner can post a signal on behalf of a master (for seeding)
+    function adminPostSignal(
+        address master,
+        uint8 direction,
+        string calldata tokenPair,
+        uint256 entryPrice,
+        uint256 targetPrice,
+        uint256 stopLoss
+    ) external onlyOwner {
+        require(masters[master].active, "Not a registered master");
+
+        uint256 id = signalCount;
+        signals[id] = Signal({
+            id: id,
+            master: master,
+            direction: direction,
+            tokenPair: tokenPair,
+            entryPrice: entryPrice,
+            targetPrice: targetPrice,
+            stopLoss: stopLoss,
+            createdAt: block.timestamp,
+            status: 0,
+            pnlBps: 0
+        });
+
+        masterSignalIds[master].push(id);
+        masterStats[master].totalSignals++;
+        signalCount++;
+
+        emit SignalPosted(id, master, direction, tokenPair, entryPrice);
     }
 }
