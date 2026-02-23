@@ -42,3 +42,30 @@ contract BlackCatTest is Test {
         blackCat.registerMaster("");
     }
 }
+
+    function test_PostSignal() public {
+        vm.prank(master1);
+        blackCat.registerMaster("ShadowAlpha");
+
+        vm.prank(master1);
+        blackCat.postSignal(0, "ETH/USD", 2000e18, 2200e18, 1800e18);
+
+        BlackCat.Signal memory sig = blackCat.getSignal(0);
+        assertEq(sig.master, master1);
+        assertEq(sig.direction, 0);
+        assertEq(sig.entryPrice, 2000e18);
+    }
+
+    function test_RevertUnregisteredPostSignal() public {
+        vm.prank(master1);
+        vm.expectRevert("Not a registered master");
+        blackCat.postSignal(0, "ETH/USD", 2000e18, 2200e18, 1800e18);
+    }
+
+    function test_RevertInvalidDirection() public {
+        vm.prank(master1);
+        blackCat.registerMaster("ShadowAlpha");
+        vm.prank(master1);
+        vm.expectRevert("Invalid direction");
+        blackCat.postSignal(2, "ETH/USD", 2000e18, 2200e18, 1800e18);
+    }
