@@ -69,3 +69,21 @@ contract BlackCatTest is Test {
         vm.expectRevert("Invalid direction");
         blackCat.postSignal(2, "ETH/USD", 2000e18, 2200e18, 1800e18);
     }
+
+    function test_SubscribeFree() public {
+        vm.prank(subscriber);
+        blackCat.subscribe(0);
+        (address sub, uint8 tier, ) = blackCat.subscriptions(subscriber);
+        assertEq(sub, subscriber);
+        assertEq(tier, 0);
+    }
+
+    function test_SubscribePro() public {
+        usdc.mint(subscriber, 1000e6);
+        vm.startPrank(subscriber);
+        usdc.approve(address(blackCat), 100e6);
+        blackCat.subscribe(1);
+        vm.stopPrank();
+        (, uint8 tier, ) = blackCat.subscriptions(subscriber);
+        assertEq(tier, 1);
+    }
