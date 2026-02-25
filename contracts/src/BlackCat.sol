@@ -261,7 +261,7 @@ contract BlackCat is Ownable {
         return masterAddresses;
     }
 
-    // --- Admin (owner-only for testnet seeding) ---
+    // --- Admin ---
     function setKeystoneForwarder(address _forwarder) external onlyOwner {
         keystoneForwarder = _forwarder;
     }
