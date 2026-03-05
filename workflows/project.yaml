@@ -1,0 +1,11 @@
+version: "1.0"
+name: "black-cat"
+
+staging-settings:
+  rpcs:
+    - chain-name: avalanche-testnet-fuji
+      url: https://api.avax-test.network/ext/bc/C/rpc
+
+workflows:
+  - name: verify-signals
+    path: ./verify-signals
