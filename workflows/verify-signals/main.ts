@@ -502,3 +502,4 @@ export async function main() {
   const runner = await Runner.newRunner<Config>();
   await runner.run(initWorkflow);
 }
+// Step 4: Confidential HTTP for Claude AI market commentary
