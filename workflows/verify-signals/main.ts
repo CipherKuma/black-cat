@@ -503,3 +503,4 @@ export async function main() {
   await runner.run(initWorkflow);
 }
 // Step 4: Confidential HTTP for Claude AI market commentary
+// Step 5: Leaderboard ranking with projected PnL
