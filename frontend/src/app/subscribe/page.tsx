@@ -440,4 +440,3 @@ export default function SubscribePage() {
     </div>
   );
 }
-// accessible signals
