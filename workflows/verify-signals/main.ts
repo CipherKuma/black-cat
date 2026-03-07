@@ -502,3 +502,4 @@ export async function main() {
   const runner = await Runner.newRunner<Config>();
   await runner.run(initWorkflow);
 }
+// All 6 steps verified via cre workflow simulate
