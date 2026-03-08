@@ -1,3 +1,4 @@
+// Formatting utilities for prices, addresses, and dates
 import { formatEther } from "viem";
 
 export function truncateAddress(address: string): string {
