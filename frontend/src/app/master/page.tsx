@@ -506,4 +506,3 @@ export default function MasterPage() {
     </div>
   );
 }
-// direction fix
