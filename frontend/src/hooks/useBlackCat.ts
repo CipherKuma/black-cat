@@ -1,3 +1,4 @@
+// Read hooks for BlackCat contract
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
