@@ -32,7 +32,7 @@ export default function RootLayout({
       >
         <Providers>
           <Header />
-          <main className="min-h-[calc(100vh-4rem)]">{children}</main>
+          <main className="min-h-[calc(100vh-4rem)] font-sans">{children}</main>
         </Providers>
       </body>
     </html>
