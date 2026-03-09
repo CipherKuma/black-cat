@@ -15,7 +15,7 @@ Black Cat is a private copy trading signal platform where expert traders post en
 ---
 
 ### 3. Category
-DeFi
+DeFi DeFi Privacy
 
 ---
 
