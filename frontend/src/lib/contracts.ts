@@ -1,3 +1,4 @@
+// Contract addresses and chain configuration
 export const CONTRACTS = {
   testUSDC: {
     address: "0x7f9B9D8DbDe8a5495374228a4D92284A2043981d" as `0x${string}`,
