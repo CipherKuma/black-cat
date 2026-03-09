@@ -1,3 +1,4 @@
+// Viem public client for Avalanche Fuji
 import { createPublicClient, http, defineChain } from "viem";
 
 export const avalancheFuji = defineChain({
