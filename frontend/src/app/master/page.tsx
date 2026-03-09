@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { usePrivy, useWallets } from "@privy-io/react-auth";
+import { useActiveAccount, useConnectModal } from "thirdweb/react";
+import { client, wallets as thirdwebWallets, chain } from "@/lib/thirdweb";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -457,20 +458,15 @@ function MasterDashboard({ address }: { address: `0x${string}` }) {
 }
 
 export default function MasterPage() {
-  const { authenticated, ready, login } = usePrivy();
-  const { wallets } = useWallets();
-  const address = wallets[0]?.address as `0x${string}` | undefined;
+  const account = useActiveAccount();
+  const { connect } = useConnectModal();
+  const address = account?.address as `0x${string}` | undefined;
   const { master, loading, refetch } = useMasterInfo(address);
 
-  if (!ready) {
-    return (
-      <div className="flex h-96 items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-green-500 border-t-transparent" />
-      </div>
-    );
-  }
+  const handleConnect = () =>
+    connect({ client, wallets: thirdwebWallets, chain });
 
-  if (!authenticated || !address) {
+  if (!account || !address) {
     return (
       <div className="mx-auto max-w-lg py-24 text-center">
         <h1 className="mb-4 text-3xl font-bold text-white">Master Dashboard</h1>
@@ -479,7 +475,7 @@ export default function MasterPage() {
           signals.
         </p>
         <Button
-          onClick={login}
+          onClick={handleConnect}
           className="bg-green-500 text-black hover:bg-green-400"
         >
           Connect Wallet

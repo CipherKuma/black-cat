@@ -1,52 +1,39 @@
-// Write hooks for BlackCat contract interactions
 "use client";
 
 import { useState, useCallback } from "react";
-import { usePrivy, useWallets } from "@privy-io/react-auth";
-import {
-  createWalletClient,
-  custom,
-  parseUnits,
-  type WalletClient,
-} from "viem";
+import { useActiveAccount } from "thirdweb/react";
+import { viemAdapter } from "thirdweb/adapters/viem";
+import { parseUnits } from "viem";
 import { avalancheFuji } from "@/lib/viem";
+import { client, chain } from "@/lib/thirdweb";
 import { CONTRACTS } from "@/lib/contracts";
 import BlackCatAbi from "@/lib/abis/BlackCat.json";
 import TestUSDCAbi from "@/lib/abis/TestUSDC.json";
 import { publicClient } from "@/lib/viem";
 
-async function getWalletClient(
-  wallets: ReturnType<typeof useWallets>["wallets"],
-): Promise<WalletClient> {
-  const wallet = wallets[0];
-  if (!wallet) throw new Error("No wallet connected");
-  const provider = await wallet.getEthereumProvider();
-  return createWalletClient({
-    chain: avalancheFuji,
-    transport: custom(provider),
-  });
-}
-
 export function useRegisterMaster() {
-  const { wallets } = useWallets();
-  const { authenticated } = usePrivy();
+  const account = useActiveAccount();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const register = useCallback(
     async (name: string) => {
-      if (!authenticated || !wallets[0]) throw new Error("Not connected");
+      if (!account) throw new Error("Not connected");
       try {
         setLoading(true);
         setError(null);
-        const client = await getWalletClient(wallets);
-        const [account] = await client.getAddresses();
-        const hash = await client.writeContract({
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const wc: any = viemAdapter.walletClient.toViem({
+          client,
+          account,
+          chain,
+        });
+        const hash = await wc.writeContract({
           address: CONTRACTS.blackCat.address,
           abi: BlackCatAbi,
           functionName: "registerMaster",
           args: [name],
-          account,
+          account: account.address as `0x${string}`,
           chain: avalancheFuji,
         });
         await publicClient.waitForTransactionReceipt({ hash });
@@ -59,15 +46,14 @@ export function useRegisterMaster() {
         setLoading(false);
       }
     },
-    [wallets, authenticated],
+    [account],
   );
 
   return { register, loading, error };
 }
 
 export function usePostSignal() {
-  const { wallets } = useWallets();
-  const { authenticated } = usePrivy();
+  const account = useActiveAccount();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -79,13 +65,17 @@ export function usePostSignal() {
       targetPrice: string,
       stopLoss: string,
     ) => {
-      if (!authenticated || !wallets[0]) throw new Error("Not connected");
+      if (!account) throw new Error("Not connected");
       try {
         setLoading(true);
         setError(null);
-        const client = await getWalletClient(wallets);
-        const [account] = await client.getAddresses();
-        const hash = await client.writeContract({
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const wc: any = viemAdapter.walletClient.toViem({
+          client,
+          account,
+          chain,
+        });
+        const hash = await wc.writeContract({
           address: CONTRACTS.blackCat.address,
           abi: BlackCatAbi,
           functionName: "postSignal",
@@ -96,7 +86,7 @@ export function usePostSignal() {
             parseUnits(targetPrice, 18),
             parseUnits(stopLoss, 18),
           ],
-          account,
+          account: account.address as `0x${string}`,
           chain: avalancheFuji,
         });
         await publicClient.waitForTransactionReceipt({ hash });
@@ -110,15 +100,14 @@ export function usePostSignal() {
         setLoading(false);
       }
     },
-    [wallets, authenticated],
+    [account],
   );
 
   return { post, loading, error };
 }
 
 export function useSubscribe() {
-  const { wallets } = useWallets();
-  const { authenticated } = usePrivy();
+  const account = useActiveAccount();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [step, setStep] = useState<
@@ -127,13 +116,16 @@ export function useSubscribe() {
 
   const subscribe = useCallback(
     async (tier: number) => {
-      if (!authenticated || !wallets[0]) throw new Error("Not connected");
+      if (!account) throw new Error("Not connected");
       try {
         setLoading(true);
         setError(null);
-
-        const client = await getWalletClient(wallets);
-        const [account] = await client.getAddresses();
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const wc: any = viemAdapter.walletClient.toViem({
+          client,
+          account,
+          chain,
+        });
 
         if (tier === 1) {
           setStep("approving");
@@ -143,24 +135,24 @@ export function useSubscribe() {
             functionName: "PRO_FEE",
           })) as bigint;
 
-          const approveHash = await client.writeContract({
+          const approveHash = await wc.writeContract({
             address: CONTRACTS.testUSDC.address,
             abi: TestUSDCAbi,
             functionName: "approve",
             args: [CONTRACTS.blackCat.address, proFee],
-            account,
+            account: account.address as `0x${string}`,
             chain: avalancheFuji,
           });
           await publicClient.waitForTransactionReceipt({ hash: approveHash });
         }
 
         setStep("subscribing");
-        const subHash = await client.writeContract({
+        const subHash = await wc.writeContract({
           address: CONTRACTS.blackCat.address,
           abi: BlackCatAbi,
           functionName: "subscribe",
           args: [tier],
-          account,
+          account: account.address as `0x${string}`,
           chain: avalancheFuji,
         });
         await publicClient.waitForTransactionReceipt({ hash: subHash });
@@ -175,31 +167,34 @@ export function useSubscribe() {
         setLoading(false);
       }
     },
-    [wallets, authenticated],
+    [account],
   );
 
   return { subscribe, loading, error, step, resetStep: () => setStep("idle") };
 }
 
 export function useFaucet() {
-  const { wallets } = useWallets();
-  const { authenticated } = usePrivy();
+  const account = useActiveAccount();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const claim = useCallback(async () => {
-    if (!authenticated || !wallets[0]) throw new Error("Not connected");
+    if (!account) throw new Error("Not connected");
     try {
       setLoading(true);
       setError(null);
-      const client = await getWalletClient(wallets);
-      const [account] = await client.getAddresses();
-      const hash = await client.writeContract({
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const wc: any = viemAdapter.walletClient.toViem({
+        client,
+        account,
+        chain,
+      });
+      const hash = await wc.writeContract({
         address: CONTRACTS.testUSDC.address,
         abi: TestUSDCAbi,
         functionName: "faucet",
         args: [1000000000n],
-        account,
+        account: account.address as `0x${string}`,
         chain: avalancheFuji,
       });
       await publicClient.waitForTransactionReceipt({ hash });
@@ -211,7 +206,7 @@ export function useFaucet() {
     } finally {
       setLoading(false);
     }
-  }, [wallets, authenticated]);
+  }, [account]);
 
   return { claim, loading, error };
 }

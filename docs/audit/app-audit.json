@@ -1,0 +1,44 @@
+{
+  "generatedAt": "2026-03-09T00:00:00.000Z",
+  "repo": "black-cat",
+  "mode": "code-reality-only",
+  "notes": [
+    "Inventory is based on implemented frontend, workflow, and contract code only.",
+    "MVP docs are treated as context and not test ownership authority."
+  ],
+  "frontend": {
+    "appPath": "frontend/src/app",
+    "pages": ["/", "/leaderboard", "/master", "/subscribe"],
+    "apiRoutes": []
+  },
+  "workflows": {
+    "packagePath": "workflows",
+    "simulateOnly": true,
+    "entries": ["verify-signals"]
+  },
+  "contracts": {
+    "packagePath": "contracts",
+    "src": ["BlackCat.sol", "TestUSDC.sol"],
+    "tests": ["test/BlackCat.t.sol"]
+  },
+  "testModules": [
+    {
+      "key": "frontend-navigation",
+      "priority": "smoke",
+      "pages": ["/", "/leaderboard", "/master", "/subscribe"]
+    },
+    {
+      "key": "verify-signals-workflow",
+      "priority": "regression",
+      "workflowEntries": ["verify-signals"]
+    },
+    {
+      "key": "contracts-core",
+      "priority": "regression",
+      "contractTests": ["test/BlackCat.t.sol"]
+    }
+  ],
+  "excludedAsAspirational": [
+    "docs/MVP.md features with no matching frontend page/workflow/contract entrypoint"
+  ]
+}

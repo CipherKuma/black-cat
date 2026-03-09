@@ -1,0 +1,58 @@
+{
+  "app": "black-cat",
+  "section": "contracts-core",
+  "lastRun": "2026-03-09T14:02:03.158Z",
+  "runner": "contract",
+  "results": [
+    {
+      "id": "BC-CON-1",
+      "status": "pass",
+      "notes": "forge suite passed: BlackCat.t.sol",
+      "history": [
+        {
+          "ranAt": "2026-03-09T13:21:30.659Z",
+          "status": "pass",
+          "runner": "contract"
+        }
+      ],
+      "lastRun": {
+        "ranAt": "2026-03-09T14:02:03.158Z",
+        "runner": "contract",
+        "environment": {
+          "gitSha": "b90e5e5"
+        },
+        "evidence": [
+          {
+            "type": "forge-output",
+            "path": "docs/evidence/contracts/forge-2026-03-09T14-02-03-158Z.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "BC-CON-2",
+      "status": "pass",
+      "notes": "forge suite passed: BlackCat.t.sol",
+      "history": [
+        {
+          "ranAt": "2026-03-09T13:21:30.659Z",
+          "status": "pass",
+          "runner": "contract"
+        }
+      ],
+      "lastRun": {
+        "ranAt": "2026-03-09T14:02:03.158Z",
+        "runner": "contract",
+        "environment": {
+          "gitSha": "b90e5e5"
+        },
+        "evidence": [
+          {
+            "type": "forge-output",
+            "path": "docs/evidence/contracts/forge-2026-03-09T14-02-03-158Z.json"
+          }
+        ]
+      }
+    }
+  ]
+}

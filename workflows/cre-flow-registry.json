@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "workflows": [
+    {
+      "workflow": "verify-signals",
+      "section": "cre-simulate",
+      "specIds": ["BC-CRE-1", "BC-CRE-2"],
+      "fixture": "docs/fixtures/workflows/verify-signals.json"
+    }
+  ]
+}

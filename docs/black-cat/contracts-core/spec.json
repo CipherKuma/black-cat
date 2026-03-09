@@ -1,0 +1,55 @@
+{
+  "app": "black-cat",
+  "section": "contracts-core",
+  "title": "Contracts Core",
+  "description": "Deterministic Foundry mapping for BlackCat contracts.",
+  "executionOrder": 3,
+  "sectionDependsOn": ["black-cat/frontend-core"],
+  "tests": [
+    {
+      "id": "BC-CON-1",
+      "title": "BlackCat Foundry suite passes under forge test output mapping.",
+      "description": "This test validates the BlackCat contract behavior using the existing Foundry suite and writes deterministic mapped results. It catches on-chain logic regressions.",
+      "preconditions": [
+        "forge is installed",
+        "contracts dependencies are present"
+      ],
+      "steps": [
+        "Run forge test --json in contracts package",
+        "Extract BlackCat.t.sol suite result",
+        "Write mapped result evidence artifact"
+      ],
+      "successCriteria": "BlackCat.t.sol passes and deterministic mapping artifact is produced.",
+      "mode": "manual",
+      "priority": "regression",
+      "tags": ["forge", "contracts", "blackcat"],
+      "dependsOn": [],
+      "fixtures": [],
+      "routes": [],
+      "pages": [],
+      "tables": ["onchain_signals", "onchain_leaderboard"],
+      "roles": ["operator"]
+    },
+    {
+      "id": "BC-CON-2",
+      "title": "Contract test execution is stable across repeated forge runs with unchanged state.",
+      "description": "This deep contract test checks repeatability of the Foundry suite by requiring consistent pass behavior on repeated execution. It catches flaky tests and hidden order dependencies.",
+      "preconditions": ["BC-CON-1 passes"],
+      "steps": [
+        "Run forge test --json once and capture result",
+        "Run forge test --json again without code changes",
+        "Confirm both runs produce consistent pass/fail outcome"
+      ],
+      "successCriteria": "Repeated forge runs remain consistent and deterministic for mapped suites.",
+      "mode": "manual",
+      "priority": "deep",
+      "tags": ["contracts", "forge", "determinism"],
+      "dependsOn": ["BC-CON-1"],
+      "fixtures": [],
+      "routes": [],
+      "pages": [],
+      "tables": ["onchain_signals", "onchain_leaderboard"],
+      "roles": ["operator"]
+    }
+  ]
+}

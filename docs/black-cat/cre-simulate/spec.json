@@ -1,0 +1,55 @@
+{
+  "app": "black-cat",
+  "section": "cre-simulate",
+  "title": "CRE Simulation",
+  "description": "CRE workflow verification using simulation only.",
+  "executionOrder": 2,
+  "sectionDependsOn": ["black-cat/frontend-core"],
+  "tests": [
+    {
+      "id": "BC-CRE-1",
+      "title": "verify-signals workflow simulation succeeds with deterministic fixture payload.",
+      "description": "This test validates the only workflow entrypoint in black-cat using deterministic simulation input. It catches SDK/runtime wiring regressions.",
+      "preconditions": [
+        "CRE CLI is installed",
+        "workflow dependencies are installed"
+      ],
+      "steps": [
+        "Run cre workflow simulate verify-signals with docs/fixtures/workflows/verify-signals.json payload",
+        "Capture output log",
+        "Assert command exits successfully"
+      ],
+      "successCriteria": "Workflow simulation exits successfully and produces traceable output.",
+      "mode": "manual",
+      "priority": "regression",
+      "tags": ["cre", "simulate", "signals"],
+      "dependsOn": [],
+      "fixtures": ["workflows.entries.verify-signals.payloadFixture"],
+      "routes": [],
+      "pages": [],
+      "tables": ["signals", "leaderboard"],
+      "roles": ["operator"]
+    },
+    {
+      "id": "BC-CRE-2",
+      "title": "verify-signals workflow simulation remains deterministic across two consecutive runs with the same payload.",
+      "description": "This deep workflow test checks reproducibility by running the same simulation twice back-to-back. It catches hidden nondeterminism and state leakage between runs.",
+      "preconditions": ["BC-CRE-1 passes"],
+      "steps": [
+        "Run cre workflow simulate verify-signals with deterministic fixture",
+        "Run the same simulation again with identical fixture",
+        "Compare key output markers and confirm deterministic behavior"
+      ],
+      "successCriteria": "Both runs succeed and output shape remains deterministic for key fields.",
+      "mode": "manual",
+      "priority": "deep",
+      "tags": ["cre", "determinism", "deep"],
+      "dependsOn": ["BC-CRE-1"],
+      "fixtures": ["workflows.entries.verify-signals.payloadFixture"],
+      "routes": [],
+      "pages": [],
+      "tables": ["signals", "leaderboard"],
+      "roles": ["operator"]
+    }
+  ]
+}

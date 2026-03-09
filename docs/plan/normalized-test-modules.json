@@ -1,0 +1,18 @@
+{
+  "generatedAt": "2026-03-09T00:00:00.000Z",
+  "normalizedSections": {
+    "black-cat/frontend-core": {
+      "source": "frontend/src/app",
+      "mappedPages": ["/", "/leaderboard", "/master", "/subscribe"]
+    },
+    "black-cat/cre-simulate": {
+      "source": "workflows/verify-signals/main.ts",
+      "simulateOnly": true
+    },
+    "black-cat/contracts-core": {
+      "source": "contracts/test/BlackCat.t.sol",
+      "runner": "forge test --json"
+    }
+  },
+  "discarded": ["docs/MVP.md items with no implementation surface"]
+}

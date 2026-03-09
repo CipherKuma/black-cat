@@ -1,0 +1,20 @@
+{
+  "app": "black-cat",
+  "frontend": {
+    "baseUrl": "http://localhost:3030",
+    "roles": ["visitor", "master", "subscriber", "admin"]
+  },
+  "workflows": {
+    "packagePath": "workflows",
+    "simulateCommand": "cre workflow simulate",
+    "entries": {
+      "verify-signals": {
+        "payloadFixture": "docs/fixtures/workflows/verify-signals.json"
+      }
+    }
+  },
+  "contracts": {
+    "packagePath": "contracts",
+    "testCommand": "forge test --json"
+  }
+}

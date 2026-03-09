@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "mappings": [
+    {
+      "suite": "BlackCat.t.sol",
+      "section": "contracts-core",
+      "specIds": ["BC-CON-1", "BC-CON-2"]
+    }
+  ]
+}

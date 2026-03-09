@@ -1,0 +1,78 @@
+{
+  "app": "black-cat",
+  "section": "cre-simulate",
+  "lastRun": "2026-03-09T14:02:02.528Z",
+  "runner": "ctest",
+  "results": [
+    {
+      "id": "BC-CRE-1",
+      "status": "pass",
+      "notes": "CRE simulate passed for verify-signals",
+      "history": [
+        {
+          "ranAt": "2026-03-09T13:24:54.882Z",
+          "status": "pass",
+          "runner": "ctest"
+        },
+        {
+          "ranAt": "2026-03-09T13:23:40.626Z",
+          "status": "fail",
+          "runner": "ctest"
+        },
+        {
+          "ranAt": "2026-03-09T13:21:31.308Z",
+          "status": "fail",
+          "runner": "ctest"
+        }
+      ],
+      "lastRun": {
+        "ranAt": "2026-03-09T14:02:02.528Z",
+        "runner": "ctest",
+        "environment": {
+          "gitSha": "b90e5e5"
+        },
+        "evidence": [
+          {
+            "type": "simulate-output",
+            "path": "docs/evidence/cre/verify-signals-2026-03-09T14-02-02-528Z.log"
+          }
+        ]
+      }
+    },
+    {
+      "id": "BC-CRE-2",
+      "status": "pass",
+      "notes": "CRE simulate passed for verify-signals",
+      "history": [
+        {
+          "ranAt": "2026-03-09T13:24:54.882Z",
+          "status": "pass",
+          "runner": "ctest"
+        },
+        {
+          "ranAt": "2026-03-09T13:23:40.626Z",
+          "status": "fail",
+          "runner": "ctest"
+        },
+        {
+          "ranAt": "2026-03-09T13:21:31.308Z",
+          "status": "fail",
+          "runner": "ctest"
+        }
+      ],
+      "lastRun": {
+        "ranAt": "2026-03-09T14:02:02.528Z",
+        "runner": "ctest",
+        "environment": {
+          "gitSha": "b90e5e5"
+        },
+        "evidence": [
+          {
+            "type": "simulate-output",
+            "path": "docs/evidence/cre/verify-signals-2026-03-09T14-02-02-528Z.log"
+          }
+        ]
+      }
+    }
+  ]
+}

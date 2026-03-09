@@ -1,6 +1,7 @@
 "use client";
 
-import { usePrivy, useWallets } from "@privy-io/react-auth";
+import { useActiveAccount, useConnectModal } from "thirdweb/react";
+import { client, wallets as thirdwebWallets, chain } from "@/lib/thirdweb";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -251,15 +252,17 @@ function MasterSignalCard({ address }: { address: `0x${string}` }) {
 }
 
 export default function SubscribePage() {
-  const { authenticated, ready, login } = usePrivy();
-  const { wallets } = useWallets();
-  const address = wallets[0]?.address as `0x${string}` | undefined;
+  const account = useActiveAccount();
+  const { connect } = useConnectModal();
+  const address = account?.address as `0x${string}` | undefined;
   const { subscription, refetch: refetchSub } = useSubscription(address);
   const { balance, refetch: refetchBalance } = useUsdcBalance(address);
   const { subscribe, step, resetStep } = useSubscribe();
   const { claim, loading: faucetLoading } = useFaucet();
 
   const showDialog = step !== "idle";
+  const handleConnect = () =>
+    connect({ client, wallets: thirdwebWallets, chain });
 
   const handleSubscribe = async (tier: number) => {
     try {
@@ -288,14 +291,6 @@ export default function SubscribePage() {
     }
   };
 
-  if (!ready) {
-    return (
-      <div className="flex h-96 items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-green-500 border-t-transparent" />
-      </div>
-    );
-  }
-
   const isActive =
     subscription &&
     subscription.expiresAt > BigInt(Math.floor(Date.now() / 1000));
@@ -316,7 +311,7 @@ export default function SubscribePage() {
         </p>
       </div>
 
-      {authenticated && address && (
+      {!!account && address && (
         <div className="mb-8 flex items-center justify-between rounded-xl border border-border bg-card/50 px-6 py-4">
           <div className="flex items-center gap-4">
             <div>
@@ -404,7 +399,7 @@ export default function SubscribePage() {
                   ))}
                 </ul>
 
-                {authenticated ? (
+                {!!account ? (
                   isCurrent ? (
                     <Button disabled className="w-full">
                       Current Plan
@@ -426,7 +421,11 @@ export default function SubscribePage() {
                     </Button>
                   )
                 ) : (
-                  <Button className="w-full" variant="outline" onClick={login}>
+                  <Button
+                    className="w-full"
+                    variant="outline"
+                    onClick={handleConnect}
+                  >
                     Connect Wallet
                   </Button>
                 )}
@@ -436,7 +435,7 @@ export default function SubscribePage() {
         })}
       </div>
 
-      {authenticated && address && <AccessibleSignals address={address} />}
+      {!!account && address && <AccessibleSignals address={address} />}
     </div>
   );
 }

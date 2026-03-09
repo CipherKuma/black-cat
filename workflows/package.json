@@ -2,6 +2,9 @@
   "name": "black-cat-workflows",
   "private": true,
   "type": "module",
+  "scripts": {
+    "test:cre": "node scripts/run-ctest.mjs"
+  },
   "dependencies": {
     "@chainlink/cre-sdk": "latest",
     "viem": "^2.0.0"

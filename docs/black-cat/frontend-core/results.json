@@ -1,0 +1,83 @@
+{
+  "app": "black-cat",
+  "section": "frontend-core",
+  "lastRun": "2026-03-09T13:32:00.000Z",
+  "runner": "btest",
+  "results": [
+    {
+      "id": "BC-FE-1",
+      "status": "pass",
+      "notes": "Home, leaderboard, master pages render without crashes",
+      "history": [
+        {
+          "ranAt": "2026-03-09T13:22:00.000Z",
+          "status": "pass",
+          "runner": "btest"
+        }
+      ],
+      "lastRun": {
+        "ranAt": "2026-03-09T13:32:00.000Z",
+        "runner": "btest",
+        "environment": {
+          "gitSha": "b90e5e5"
+        },
+        "evidence": [
+          {
+            "type": "report",
+            "path": "frontend/e2e/results/report.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "BC-FE-2",
+      "status": "pass",
+      "notes": "Subscribe page renders and accepts interaction",
+      "history": [
+        {
+          "ranAt": "2026-03-09T13:22:00.000Z",
+          "status": "pass",
+          "runner": "btest"
+        }
+      ],
+      "lastRun": {
+        "ranAt": "2026-03-09T13:32:00.000Z",
+        "runner": "btest",
+        "environment": {
+          "gitSha": "b90e5e5"
+        },
+        "evidence": [
+          {
+            "type": "report",
+            "path": "frontend/e2e/results/report.json"
+          }
+        ]
+      }
+    },
+    {
+      "id": "BC-FE-3",
+      "status": "pass",
+      "notes": "Cross-page navigation remains stable across 5 transitions",
+      "history": [
+        {
+          "ranAt": "2026-03-09T13:22:00.000Z",
+          "status": "pass",
+          "runner": "btest"
+        }
+      ],
+      "lastRun": {
+        "ranAt": "2026-03-09T13:32:00.000Z",
+        "runner": "btest",
+        "environment": {
+          "gitSha": "b90e5e5"
+        },
+        "evidence": [
+          {
+            "type": "report",
+            "path": "frontend/e2e/results/report.json"
+          }
+        ]
+      }
+    }
+  ]
+}

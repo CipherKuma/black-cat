@@ -1,0 +1,72 @@
+{
+  "app": "black-cat",
+  "section": "frontend-core",
+  "title": "Frontend Core",
+  "description": "Smoke coverage for implemented black-cat frontend pages.",
+  "executionOrder": 1,
+  "tests": [
+    {
+      "id": "BC-FE-1",
+      "title": "Home, leaderboard, and master pages render without client/runtime crashes.",
+      "description": "This smoke test verifies the three primary routes can be loaded in a deterministic local run. It catches route-level breakage and hydration issues.",
+      "preconditions": ["frontend is running on localhost:3030"],
+      "steps": [
+        "Open /",
+        "Open /leaderboard",
+        "Open /master and verify no runtime exception"
+      ],
+      "successCriteria": "All three pages render and remain interactive with no visible error boundary.",
+      "mode": "browser",
+      "priority": "smoke",
+      "tags": ["frontend", "navigation"],
+      "dependsOn": [],
+      "fixtures": ["frontend.baseUrl"],
+      "routes": [],
+      "pages": ["/", "/leaderboard", "/master"],
+      "tables": [],
+      "roles": ["visitor", "master"]
+    },
+    {
+      "id": "BC-FE-2",
+      "title": "Subscribe page accepts deterministic input interactions and does not throw UI errors.",
+      "description": "This test validates the subscription page interaction path at UI level. It guards against form and component regressions.",
+      "preconditions": ["frontend is running"],
+      "steps": [
+        "Open /subscribe",
+        "Enter deterministic form values if fields are present",
+        "Trigger submit action and assert stable UI state"
+      ],
+      "successCriteria": "Subscribe page handles interaction without crash and shows expected success/pending UI state.",
+      "mode": "browser",
+      "priority": "regression",
+      "tags": ["subscribe", "ui"],
+      "dependsOn": ["BC-FE-1"],
+      "fixtures": [],
+      "routes": [],
+      "pages": ["/subscribe"],
+      "tables": [],
+      "roles": ["subscriber"]
+    },
+    {
+      "id": "BC-FE-3",
+      "title": "Cross-page navigation from home to subscribe and back remains stable under repeated transitions.",
+      "description": "This deep browser test validates a realistic multi-page user journey instead of isolated page checks. It catches accumulated client-state or routing issues that only appear after several transitions.",
+      "preconditions": ["BC-FE-1 passes"],
+      "steps": [
+        "Open / and navigate to /master",
+        "Navigate to /leaderboard and then /subscribe",
+        "Return to / and verify UI remains interactive"
+      ],
+      "successCriteria": "All transitions complete without runtime errors and final page remains interactive.",
+      "mode": "browser",
+      "priority": "deep",
+      "tags": ["navigation", "journey", "deep"],
+      "dependsOn": ["BC-FE-1"],
+      "fixtures": [],
+      "routes": [],
+      "pages": ["/", "/master", "/leaderboard", "/subscribe"],
+      "tables": [],
+      "roles": ["visitor", "subscriber"]
+    }
+  ]
+}

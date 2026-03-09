@@ -33,8 +33,8 @@ function HeroSection() {
           </h1>
           <p className="mt-6 max-w-lg text-lg text-muted-foreground">
             Encrypted trade signals verified by Chainlink CRE. No front-running,
-            no strategy theft, no alpha decay, no data leaks. Copy the best traders without
-            anyone knowing.
+            no strategy theft, no alpha decay, no data leaks. Copy the best
+            traders without anyone knowing.
           </p>
           <div className="mt-8 flex gap-4">
             <Link href="/master">

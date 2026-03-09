@@ -1,6 +1,11 @@
 "use client";
 
-import { usePrivy, useWallets } from "@privy-io/react-auth";
+import {
+  useActiveAccount,
+  useActiveWallet,
+  useDisconnect,
+  useConnectModal,
+} from "thirdweb/react";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Copy, LogOut, ChevronDown } from "lucide-react";
@@ -13,14 +18,22 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { truncateAddress, formatAvax } from "@/lib/format";
 import { publicClient } from "@/lib/viem";
+import { client, wallets, chain } from "@/lib/thirdweb";
 
 export function Header() {
-  const { login, logout, authenticated, ready } = usePrivy();
-  const { wallets } = useWallets();
+  const account = useActiveAccount();
+  const wallet = useActiveWallet();
+  const { disconnect } = useDisconnect();
+  const { connect } = useConnectModal();
   const [balance, setBalance] = useState<string>("...");
   const [copied, setCopied] = useState(false);
 
-  const address = wallets[0]?.address as `0x${string}` | undefined;
+  const address = account?.address as `0x${string}` | undefined;
+
+  const handleConnect = () => connect({ client, wallets, chain });
+  const handleDisconnect = () => {
+    if (wallet) disconnect(wallet);
+  };
 
   useEffect(() => {
     if (!address) {
@@ -45,7 +58,7 @@ export function Header() {
   };
 
   return (
-    <header aria-label="main navigation" className="sticky top-0 z-50 border-b border-border bg-[#0a0a0a]/95 backdrop-blur-sm">
+    <header className="sticky top-0 z-50 border-b border-border bg-[#0a0a0a]/95 backdrop-blur-sm">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4">
         <div className="flex items-center gap-8">
           <Link href="/" className="flex items-center gap-2">
@@ -93,7 +106,7 @@ export function Header() {
         </div>
 
         <div className="flex items-center gap-3">
-          {ready && authenticated && address ? (
+          {account && address ? (
             <>
               <div className="flex items-center gap-1.5 rounded-full border border-border bg-secondary/50 px-3 py-1.5">
                 <img
@@ -123,22 +136,22 @@ export function Header() {
                     <Copy className="mr-2 h-4 w-4" />
                     {copied ? "Copied!" : "Copy Address"}
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={logout}>
+                  <DropdownMenuItem onClick={handleDisconnect}>
                     <LogOut className="mr-2 h-4 w-4" />
                     Disconnect
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             </>
-          ) : ready ? (
+          ) : (
             <Button
-              onClick={login}
+              onClick={handleConnect}
               size="sm"
               className="bg-green-500 text-black hover:bg-green-400"
             >
               Connect Wallet
             </Button>
-          ) : null}
+          )}
         </div>
       </div>
     </header>

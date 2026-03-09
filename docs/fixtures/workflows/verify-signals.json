@@ -1,0 +1,5 @@
+{
+  "signalBatchId": "signals-demo-001",
+  "tokenPairs": ["ETH/USD", "BTC/USD"],
+  "timestamp": 1710000000
+}
