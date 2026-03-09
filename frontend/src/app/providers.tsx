@@ -1,3 +1,4 @@
+// App providers: Privy auth + React Query
 "use client";
 
 import { PrivyProvider } from "@privy-io/react-auth";
