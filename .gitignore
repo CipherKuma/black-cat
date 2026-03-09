@@ -41,3 +41,7 @@ broadcast/
 
 # turbo
 .turbo
+
+# Claude config
+.claude/
+CLAUDE.md
